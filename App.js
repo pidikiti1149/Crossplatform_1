@@ -11,7 +11,7 @@ import {
 
 const ArtistsScreen = (props) => {
   const [ artists, setArtists ] = useState([]);
-  const [ dataLoaded, setDataLoaded ] = useState(false);
+  const [ dataLoaded, isLoaded ] = useState(false);
   
   useEffect(() => {
     if (!dataLoaded) {
@@ -19,7 +19,7 @@ const ArtistsScreen = (props) => {
         .then(res => res.json())
         .then(({ data }) => {
           setArtists(data);
-          setDataLoaded(true);
+          isLoaded(true);
         });
     }
   });
