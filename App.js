@@ -1,51 +1,59 @@
 import React, {
   useState,
-  useEffect
+  useEffect,
 } from 'react';
-import { FlatList,StyleSheet, Text, View} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 
-
- export default class App extends React.Component {
+const ArtistsScreen = (props) => {
+  const [ artists, setArtists ] = useState([]);
+  const [ dataLoaded, setDataLoaded ] = useState(false);
   
-    state = {
-      data: []
-  }
- async componentDidMount () {
-      const res = await fetch('https://thawing-hollows-21222.herokuapp.com/artists');
-   const json = await res.json();
-   this.setState({
-     isLoaded: true,
-     items: json.artists,
-   });
-    };
+  useEffect(() => {
+    if (!dataLoaded) {
+      fetch('https://thawing-hollows-21222.herokuapp.com/artists')
+        .then(res => res.json())
+        .then(({ data }) => {
+          setArtists(data);
+          setDataLoaded(true);
+        });
+    }
+  });
 
-    render() {
-  var { isLoaded, items } = this.state;
-  if(!isLoaded){
-    return (<Text>Loading...</Text>);
+  const keyExtractor = (item) => {
+    return `${ item.id }`;
   }
-  else{
+
   return (
-    <View style={styles.container}>
-      <FlatList 
-      items={this.state.items}
-      keyExtractor={(x,i) => i}
-      renderItem={({ item }) =>
-        <Text>
-          {'${item.id} || ${item.name}'}
-        </Text>}
-        />
-    </View>
+    <FlatList
+      data={ artists }
+      keyExtractor={ keyExtractor }
+      renderItem={({ item }) => {
+        return (
+          <View style={styles.container}> 
+            <Text>{ item.name }</Text>
+          </View>
+        );
+      }}
+    />
   );
 }
-}
-}
+
+
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 10,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+    textAlign: "center",
+    marginTop:10,
+    marginRight:2,
+    marginBottom:6,
+    },
 });
